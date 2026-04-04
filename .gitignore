@@ -1,0 +1,6 @@
+build
+dist
+Example
+*.xlsx
+*.spec
+*.ico

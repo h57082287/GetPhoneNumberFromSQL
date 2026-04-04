@@ -1,0 +1,39 @@
+-- create table people (
+-- 	ID varchar(50) PRIMARY KEY,
+-- 	PNmae varchar(50),
+-- 	Sex varchar(50),
+-- 	Birthday varchar(50),
+-- 	AGE INT,
+-- 	Telc varchar(50),
+-- 	TelF varchar(50),
+-- 	ADDRESS varchar(50),
+-- 	Company varchar(50),
+-- 	CardID varchar(50),
+-- 	TelM varchar(50),
+-- 	TelB varchar(50),
+-- 	NickName varchar(50),
+-- 	Job varchar(50),
+-- 	OldAddress varchar(50),
+-- 	OtherAddress varchar(50),
+-- 	CompanyAddress varchar(50),
+-- 	CompanyPhone varchar(50),
+-- 	CellPhone varchar(50),
+-- 	CarInfo varchar(50),
+-- 	Bank varchar(50),
+-- 	BankNumber varchar(50),
+-- 	CreditInfo varchar(50),
+-- 	Email varchar(50),
+-- 	Source varchar(50),
+-- 	Remarks varchar(50)
+-- );
+
+
+-- select * from people;
+-- insert into people(ID, PName, Sex, Birthday, AGE, ADDRESS, CardID, TelM) values ('1650812', '周安妮', '女', '1989/01/01', '23', '新北市中和區興南路二段54巷11弄9號1樓', 'A224841962', '0938047972');
+-- select * from people;
+-- select * from people where PName='丁秀玲';
+-- select CardID, PName, TelM, ADDRESS from people where PName='丁秀玲';
+-- select ADDRESS from people where CardID='A224127190';
+-- select ADDRESS from people where CardID='A224127190';
+-- insert into people(ID, PName, Sex, Birthday, AGE, ADDRESS, CardID, TelM) values('189699','郭淑玲','女','1977-01-19','50','楊梅縣大安路5號3樓','W176533671','0976146315');
+-- insert into people(ID, PName, Sex, Birthday, AGE, ADDRESS, CardID, TelM) values('190039','丁秀玲','女','1988-08-27','55','中和中山路9號之6','Y225964516','0905551590');

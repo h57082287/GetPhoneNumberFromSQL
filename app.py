@@ -121,14 +121,14 @@ def deGroupData(idx):
     return size, datas
 
 def filterData(datas):
-    output = {'id':'', 'address':[], 'floor': ''}
+    output = {'id':[], 'address':[], 'floor': ''}
     for data in datas:
         if DEBUG:
             for idx,  d in enumerate(data):
                 print(f'{idx}: {d}')
         #  Presonal ID
         if not pandas.isna(data[col_id]) and data[col_id] != '':
-            output['id'] = data[col_id]
+            output['id'].append(data[col_id])
         # Address
         if data[col_address] != '同上' and not pandas.isna(data[col_address]) and data[col_address] != '':
             output['address'].append(data[col_address])
@@ -163,20 +163,28 @@ def flatten(data):
             result.append(d)
     return result
 
-def queryData(id: str, addresses: list):
+def queryData(ids: str, addresses: list):
     if DEBUG:
-        print(f"debug ID= {id},\ndebug addresses={addresses}")
-    sql = f"select DISTINCT ADDRESS from {table} where CardID='{id}';"
+        print(f"debug ID= {ids},\ndebug addresses={addresses}")
+    sql = f"select DISTINCT ADDRESS from {table}"
+    for idx, id in enumerate(ids):
+        if id != None and id != '' and id.strip() != '':
+            if idx == 0:
+                sql += f" where CardID='{id}'"
+            else:
+                sql += f" OR CardID='{id}'"
+    sql += ';'
     if DEBUG:
         print(f"debug SQL --> {sql}")
-    db_ptr.execute(sql)
-    datas = db_ptr.fetchall()
-    addr = [data[0] for data in datas]
-    if DEBUG:
-        print(f"Query --> {datas}")
-    addresses.extend(flatten(addr))
-    if DEBUG:
-        print(f"Merge addresses={addresses}")
+    if sql != f"select DISTINCT ADDRESS from {table};":
+        db_ptr.execute(sql)
+        datas = db_ptr.fetchall()
+        addr = [data[0] for data in datas]
+        if DEBUG:
+            print(f"Query --> {datas}")
+        addresses.extend(flatten(addr))
+        if DEBUG:
+            print(f"Merge addresses={addresses}")
     # Checking address doesn't inclide 'None'
     addresses = [addr for addr in addresses if addr != None]
     if DEBUG:
@@ -191,6 +199,11 @@ def queryData(id: str, addresses: list):
     for addr in addresses:
         if addr != None and not hasFloor(addr):
             buff.append(addr + '1樓')
+        # checking if address include 'F' needs to add new address which is include '樓'
+        if 'F' in addr:
+            buff.append(addr.replace('F', '樓'))
+        if hasFloor(addr):
+            buff.append(addr.replace('樓', 'F'))
     addresses.extend(flatten(buff))
     print('檢查完成 !!!')
     sql = f"select DISTINCT PName, Telc, TelM from {table}"

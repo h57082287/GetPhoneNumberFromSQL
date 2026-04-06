@@ -239,27 +239,31 @@ def preProcessData(allData, names, phones, company_phone):
         if idx == 0:
             if names[idx] != None and names[idx] != '':
                 if (phones[idx] != None and phones[idx] != '' and phones[idx].strip() != ''):
-                    if isMobileNumber(phones[idx]):
-                        result_group.append(f'{names[idx]}{phones[idx]}')
-                    else:
-                        result_group.append(f'市話{phones[idx]}')
+                    result_group.append(f'{names[idx]}{phones[idx]}')
+                    # if isMobileNumber(phones[idx]):
+                    #     result_group.append(f'{names[idx]}{phones[idx]}')
+                    # else:
+                    #     result_group.append(f'市話{phones[idx]}')
                 if (company_phone[idx] != None and company_phone[idx] != '' and company_phone[idx].strip() != ''):
-                    if isMobileNumber(company_phone[idx]):
-                        result_group.append(f'{names[idx]}{company_phone[idx]}')
-                    else:
-                        result_group.append(f'市話{company_phone[idx]}')
+                    result_group.append(f'{names[idx]}{company_phone[idx]}')
+                    # if isMobileNumber(company_phone[idx]):
+                    #     result_group.append(f'{names[idx]}{company_phone[idx]}')
+                    # else:
+                    #     result_group.append(f'市話{company_phone[idx]}')
         else:
             if names[idx] != None and names[idx] != '':
                 if (phones[idx] != None and phones[idx] != '' and phones[idx].strip() != ''):
-                    if isMobileNumber(phones[idx]):
-                        result_group.append(f'{names[idx]}{phones[idx]}')
-                    else:
-                        result_group.append(f'市話{phones[idx]}')
+                    result_group.append(f'{names[idx]}{phones[idx]}')
+                    # if isMobileNumber(phones[idx]):
+                    #     result_group.append(f'{names[idx]}{phones[idx]}')
+                    # else:
+                    #     result_group.append(f'市話{phones[idx]}')
                 if (company_phone[idx] != None and company_phone[idx] != '' and company_phone[idx].strip() != ''):
-                    if isMobileNumber(company_phone[idx]):
-                        result_group.append(f'{names[idx]}{company_phone[idx]}')
-                    else:
-                        result_group.append(f'市話{company_phone[idx]}')
+                    result_group.append(f'{names[idx]}{company_phone[idx]}')
+                    # if isMobileNumber(company_phone[idx]):
+                    #     result_group.append(f'{names[idx]}{company_phone[idx]}')
+                    # else:
+                    #     result_group.append(f'市話{company_phone[idx]}')
     print('去除重複姓名電話組合....')
     result_group = list(set(result_group))
     if DEBUG:

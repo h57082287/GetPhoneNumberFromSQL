@@ -18,6 +18,7 @@ output_fileName = fileName.split('.')[0] + '(輸出結果).xlsx'
 
 # define Column
 col_id = 42
+col_fullName = 38
 col_address = 6
 col_floor = 11
 
@@ -164,9 +165,10 @@ def flatten(data):
     return result
 
 def queryData(ids: str, addresses: list):
+    name_id_map = {}
     if DEBUG:
         print(f"debug ID= {ids},\ndebug addresses={addresses}")
-    sql = f"select DISTINCT ADDRESS from {table}"
+    sql = f"select DISTINCT ADDRESS, PName, CardID from {table}"
     for idx, id in enumerate(ids):
         if id != None and id != '' and id.strip() != '':
             if idx == 0:
@@ -176,10 +178,21 @@ def queryData(ids: str, addresses: list):
     sql += ';'
     if DEBUG:
         print(f"debug SQL --> {sql}")
-    if sql != f"select DISTINCT ADDRESS from {table};":
+    if sql != f"select DISTINCT ADDRESS, PName, CardID from {table};":
+        if DEBUG:
+            print('RUN addresses query !!!')
         db_ptr.execute(sql)
         datas = db_ptr.fetchall()
         addr = [data[0] for data in datas]
+        # Process name id set for write full name in xlsx
+        #  ------------------------------------
+        names = [data[1] for data in datas]
+        cardIDs = [data[2] for data in datas]
+        for i in range(len(names)):
+            name_id_map[cardIDs[i]] = names[i]
+        if DEBUG:
+            print(f"This is Name <--> ID mapping table: {name_id_map}")
+        #  ------------------------------------
         if DEBUG:
             print(f"Query --> {datas}")
         addresses.extend(flatten(addr))
@@ -217,7 +230,7 @@ def queryData(ids: str, addresses: list):
     if DEBUG:
         print(f"Query SQL --> {sql}")
     db_ptr.execute(sql)
-    return db_ptr.fetchall()
+    return db_ptr.fetchall(), name_id_map
 
 def preparWriteFileData(datas):
     nameList = [data[0] for data in datas]
@@ -229,7 +242,7 @@ def isMobileNumber(data):
     pattern = r'^(09\d{8})$'
     return re.match(pattern, str(data)) != None
 
-def preProcessData(allData, names, phones, company_phone):
+def preProcessData(allData, names, phones, company_phone, name_id_map):
     title = ['次序', '房屋品牌', '案名↓', '廣告下架，來電', '屋況', '姓名', '地址', '總價', '格局', '坪數', '屋齡', '樓別(次/數)', '種類', '退信', '車位', '登記原因日期', '設定', '註記', '下架後給別家賣日期及開發信來電', '姓名', '姓名地址電話', '地址電話', '戶籍地電話地址', '戶籍地電話', '同事簽了', '郵遞區號', '建檔日期', '信件碼', '網址', '開發信1', '開發信2', '開發信3', '開發信4', '開發信5', '開發信6', '', '', '', '全名', '第一階段謄本的ID有*號', '段建號', '地號', 'ID', '資料源', '公司名', '段號', '建號', '地號', '縣市', '鄉鎮區', '', '', '', '', '', '', '', '', '', '', '開發人員', '有無調謄本']
     if DEBUG:
         print(f'names length= {len(names)}, phone length= {len(phones)}, groupDates= {len(groupDatas)}')
@@ -275,6 +288,10 @@ def preProcessData(allData, names, phones, company_phone):
     if DEBUG:
         print(f'最終姓名電話組合: {result}')
     allData[1][2] = result
+    # Write full name
+    for data in allData:
+        if data[col_id] in dict(name_id_map).keys():
+            data[col_fullName] = name_id_map[data[col_id]]
     df = pandas.DataFrame(allData, columns=title)
     return df
 
@@ -283,6 +300,7 @@ def hasFloor(addr):
     return re.search(pattern, addr)
 
 def run_app():
+    name_id_dict = {}
     final_output = []
     fileSize = read_xlsx()
     for idx in range(fileSize):
@@ -294,12 +312,12 @@ def run_app():
         if DEBUG:
             print(f'id: {output["id"]},\naddress: {output["address"]},\nfloor: {output['floor']}')
         print(f'當前身分證字號: {output["id"]}')
-        pname_phonenumber = queryData(output['id'], output['address'])
+        pname_phonenumber, name_id_dict = queryData(output['id'], output['address'])
         print(f'查詢結果: {pname_phonenumber}')
         if DEBUG:
             print(f"qurey data = {pname_phonenumber}")
         nameList, phoneList, cphoneList = preparWriteFileData(pname_phonenumber)
-        final_output.append(preProcessData(datas, nameList, phoneList, cphoneList))
+        final_output.append(preProcessData(datas, nameList, phoneList, cphoneList, name_id_dict))
         print('===============結束分隔線===================')
     print('檔案寫入中....')
     all_df = pandas.concat(final_output, ignore_index=True)

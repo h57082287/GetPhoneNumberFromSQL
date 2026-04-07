@@ -233,9 +233,47 @@ def queryData(ids: str, addresses: list):
     return db_ptr.fetchall(), name_id_map
 
 def preparWriteFileData(datas):
+    phoneList = []
+    cphoneList = []
     nameList = [data[0] for data in datas]
-    phoneList = [data[1] for data in datas]
-    cphoneList = [data[2] for data in datas]
+    phoneList_buff = [data[1] for data in datas]
+    cphoneList_buff = [data[2] for data in datas]
+    # Format phone and check number dosen't reapeat
+    for phone in phoneList_buff:
+        print(f'current phone: {phone}')
+        if phone != None and phone != '' and phone.strip() != '':
+            if  phone.replace('-', '') in phoneList:
+                phoneList.append(None)
+                continue
+            if phone[3:] in phoneList:
+                phoneList.append(None)
+                continue
+            if phone[2:] in phoneList:
+                phoneList.append(None)
+                continue
+            phoneList.append(phone)
+    # Format cphone and check number dosen't reapeat
+    for cphone in cphoneList_buff:
+        isAdd = False
+        print(f'current cphone: {cphone}')
+        if cphone != None and cphone != '' and cphone.strip() != '':
+            if  cphone.replace('-', '') in cphoneList:
+                cphoneList.append(None)
+                continue
+            if cphone[3:] in cphoneList:
+                cphoneList.append(None)
+                continue
+            if cphone[2:] in cphoneList:
+                cphoneList.append(None)
+                continue
+            cphoneList.append(cphone)
+    if DEBUG:
+        print('========================================================================')
+        print(f'phoneList_buff length = {len(phoneList_buff)},\ncphoneList_buff length = {len(cphoneList_buff)}')
+        print(f'phoneList length = {len(phoneList)},\ncphoneList length = {len(cphoneList)}')
+        print(f'nameList length = {len(nameList)}')
+        print(f'{nameList}\n{phoneList}\n{cphoneList}')
+        print('========================================================================')
     return nameList, phoneList, cphoneList
 
 def isMobileNumber(data):
@@ -251,13 +289,13 @@ def preProcessData(allData, names, phones, company_phone, name_id_map):
     for idx in range(len(names)):
         if idx == 0:
             if names[idx] != None and names[idx] != '':
-                if (phones[idx] != None and phones[idx] != '' and phones[idx].strip() != ''):
+                if (len(phones) != 0 and phones[idx] != None and phones[idx] != '' and phones[idx].strip() != ''):
                     result_group.append(f'{names[idx]}{phones[idx]}')
                     # if isMobileNumber(phones[idx]):
                     #     result_group.append(f'{names[idx]}{phones[idx]}')
                     # else:
                     #     result_group.append(f'市話{phones[idx]}')
-                if (company_phone[idx] != None and company_phone[idx] != '' and company_phone[idx].strip() != ''):
+                if (len(company_phone) != 0 and company_phone[idx] != None and company_phone[idx] != '' and company_phone[idx].strip() != ''):
                     result_group.append(f'{names[idx]}{company_phone[idx]}')
                     # if isMobileNumber(company_phone[idx]):
                     #     result_group.append(f'{names[idx]}{company_phone[idx]}')
@@ -265,13 +303,13 @@ def preProcessData(allData, names, phones, company_phone, name_id_map):
                     #     result_group.append(f'市話{company_phone[idx]}')
         else:
             if names[idx] != None and names[idx] != '':
-                if (phones[idx] != None and phones[idx] != '' and phones[idx].strip() != ''):
+                if (len(phones) != 0 and phones[idx] != None and phones[idx] != '' and phones[idx].strip() != ''):
                     result_group.append(f'{names[idx]}{phones[idx]}')
                     # if isMobileNumber(phones[idx]):
                     #     result_group.append(f'{names[idx]}{phones[idx]}')
                     # else:
                     #     result_group.append(f'市話{phones[idx]}')
-                if (company_phone[idx] != None and company_phone[idx] != '' and company_phone[idx].strip() != ''):
+                if (len(company_phone) != 0 and company_phone[idx] != None and company_phone[idx] != '' and company_phone[idx].strip() != ''):
                     result_group.append(f'{names[idx]}{company_phone[idx]}')
                     # if isMobileNumber(company_phone[idx]):
                     #     result_group.append(f'{names[idx]}{company_phone[idx]}')

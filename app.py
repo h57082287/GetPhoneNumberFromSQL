@@ -199,7 +199,7 @@ def queryData(ids: str, addresses: list):
         if DEBUG:
             print(f"Merge addresses={addresses}")
     # Checking address doesn't inclide 'None'
-    addresses = [addr for addr in addresses if addr != None]
+    addresses = [addr for addr in addresses if addr != None and addr != '' and addr != 'NULL' and addr.strip() != '']
     if DEBUG:
         print(f'Filter NoneType Address --> {addresses}')
     # regex this address, if it don't has any '樓'

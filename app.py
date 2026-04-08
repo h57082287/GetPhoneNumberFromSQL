@@ -240,7 +240,8 @@ def preparWriteFileData(datas):
     cphoneList_buff = [data[2] for data in datas]
     # Format phone and check number dosen't reapeat
     for phone in phoneList_buff:
-        print(f'current phone: {phone}')
+        if DEBUG:
+            print(f'current phone: {phone}')
         if phone != None and phone != '' and phone.strip() != '':
             if  phone.replace('-', '') in phoneList:
                 phoneList.append(None)
@@ -252,10 +253,12 @@ def preparWriteFileData(datas):
                 phoneList.append(None)
                 continue
             phoneList.append(phone)
+        else:
+            phoneList.append(None)
     # Format cphone and check number dosen't reapeat
     for cphone in cphoneList_buff:
-        isAdd = False
-        print(f'current cphone: {cphone}')
+        if DEBUG:
+            print(f'current cphone: {cphone}')
         if cphone != None and cphone != '' and cphone.strip() != '':
             if  cphone.replace('-', '') in cphoneList:
                 cphoneList.append(None)
@@ -267,6 +270,8 @@ def preparWriteFileData(datas):
                 cphoneList.append(None)
                 continue
             cphoneList.append(cphone)
+        else:
+            cphoneList.append(None)
     if DEBUG:
         print('========================================================================')
         print(f'phoneList_buff length = {len(phoneList_buff)},\ncphoneList_buff length = {len(cphoneList_buff)}')
